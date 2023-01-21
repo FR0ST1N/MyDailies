@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  web:
+    build:
+      context: web
+      dockerfile: ./Dockerfile
+    ports:
+      - "80:80"
+
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - data:/app
+
+volumes:
+  data:
