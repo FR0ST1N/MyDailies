@@ -48,6 +48,11 @@ curl -X POST http://localhost:8080/api/user/setup-admin \
 
 - API unit test can be run using `go test ./...`
 
+### Code Formatting
+
+- API `gofmt -w -s .`
+- Web `npm run format`
+
 ## License
 
 - [MIT](LICENSE)
