@@ -4,6 +4,8 @@ A simple, open-source and self-hosted habit tracker app.
 
 ![Banner](banner.png)
 
+[Click here for screenshots.](screenshots)
+
 ## Features
 
 - Simple UI 👌
