@@ -10,8 +10,7 @@ import (
 func InitEntryRoutes(r *gin.RouterGroup, repo repository.IEntryRepository, habitRepo repository.IHabitRepository) {
 	// Init controller
 	controller := controllers.EntryController{
-		Repo:      repo,
-		HabitRepo: habitRepo,
+		Repo: repo,
 	}
 
 	// Entry routes
