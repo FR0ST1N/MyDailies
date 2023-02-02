@@ -12,9 +12,10 @@ type HabitRepository struct {
 type IHabitRepository interface {
 	Create(u *models.Habit) error
 	Delete(u *models.Habit) error
-	Read(u *models.Habit) error
+	Read(u *models.HabitResponse) error
 	GetHabits(u *models.User) (*[]models.Habit, error)
 	IsUser(userId uint, habitId uint) (bool, error)
+	EntriesCount(habitId uint) (int64, error)
 }
 
 func (repo *HabitRepository) Create(h *models.Habit) error {
@@ -27,8 +28,8 @@ func (repo *HabitRepository) Delete(h *models.Habit) error {
 	return err
 }
 
-func (repo *HabitRepository) Read(h *models.Habit) error {
-	err := repo.DB.First(&h, h.ID).Error
+func (repo *HabitRepository) Read(h *models.HabitResponse) error {
+	err := repo.DB.Model(&models.Habit{}).First(&h, h.ID).Error
 	return err
 }
 
@@ -46,4 +47,10 @@ func (repo *HabitRepository) IsUser(userId uint, habitId uint) (bool, error) {
 		return false, err
 	}
 	return habit.UserID == userId, nil
+}
+
+func (repo *HabitRepository) EntriesCount(habitId uint) (int64, error) {
+	var count int64
+	err := repo.DB.Model(&models.Entry{}).Where("habit_id = ?", habitId).Count(&count).Error
+	return count, err
 }

@@ -40,6 +40,27 @@ func (_m *IHabitRepository) Delete(u *models.Habit) error {
 	return r0
 }
 
+// EntriesCount provides a mock function with given fields: habitId
+func (_m *IHabitRepository) EntriesCount(habitId uint) (int64, error) {
+	ret := _m.Called(habitId)
+
+	var r0 int64
+	if rf, ok := ret.Get(0).(func(uint) int64); ok {
+		r0 = rf(habitId)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(habitId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetHabits provides a mock function with given fields: u
 func (_m *IHabitRepository) GetHabits(u *models.User) (*[]models.Habit, error) {
 	ret := _m.Called(u)
@@ -85,11 +106,11 @@ func (_m *IHabitRepository) IsUser(userId uint, habitId uint) (bool, error) {
 }
 
 // Read provides a mock function with given fields: u
-func (_m *IHabitRepository) Read(u *models.Habit) error {
+func (_m *IHabitRepository) Read(u *models.HabitResponse) error {
 	ret := _m.Called(u)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*models.Habit) error); ok {
+	if rf, ok := ret.Get(0).(func(*models.HabitResponse) error); ok {
 		r0 = rf(u)
 	} else {
 		r0 = ret.Error(0)

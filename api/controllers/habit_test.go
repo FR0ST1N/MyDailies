@@ -28,12 +28,13 @@ func (suite *HabitTestSuite) SetupSuite() {
 	mockRepo.On("Create", mock.AnythingOfType("*models.Habit")).Return(nil)
 	mockRepo.On("Delete", &models.Habit{ID: 2}).Return(gorm.ErrRecordNotFound)
 	mockRepo.On("Delete", mock.AnythingOfType("*models.Habit")).Return(nil)
-	mockRepo.On("Read", mock.AnythingOfType("*models.Habit")).Return(nil).Run(func(args mock.Arguments) {
-		arg := args.Get(0).(*models.Habit)
+	mockRepo.On("Read", mock.AnythingOfType("*models.HabitResponse")).Return(nil).Run(func(args mock.Arguments) {
+		arg := args.Get(0).(*models.HabitResponse)
 		arg.Name = "Drink Water"
 		arg.ID = 1
 		arg.UserID = 1
 	})
+	mockRepo.On("EntriesCount", mock.AnythingOfType("uint")).Return(int64(1), nil)
 	mockRepo.On("Update", mock.AnythingOfType("uint"), mock.AnythingOfType("*models.Habit")).Return(nil)
 	mockRepo.On("GetHabits", mock.AnythingOfType("*models.User")).Return(&[]models.Habit{
 		{ID: 1, Name: "Drink Water", UserID: 1, Entries: []models.Entry{{ID: 1, HabitID: 1}}},
@@ -86,7 +87,7 @@ func (suite *HabitTestSuite) TestGetHabitSuccess() {
 	a := assert.New(suite.T())
 	td := TestData{code: http.StatusOK}
 	w := td.NewHttpRequest(a, suite.router, "GET", "/api/habit/1", true, false)
-	expected := `{"name": "Drink Water", "id": 1, "user_id": 1, "created_at": "0001-01-01T00:00:00Z", "updated_at": "0001-01-01T00:00:00Z"}`
+	expected := `{"name": "Drink Water", "id": 1, "user_id": 1, "created_at": "0001-01-01T00:00:00Z", "updated_at": "0001-01-01T00:00:00Z", "entries_count": 1}`
 	actual := w.Body.String()
 	a.JSONEq(expected, actual)
 }
