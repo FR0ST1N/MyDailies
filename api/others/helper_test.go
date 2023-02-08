@@ -18,7 +18,7 @@ import (
 func TestTruncateToDay(t *testing.T) {
 	a := assert.New(t)
 	timeNow := time.Now()
-	expected := time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), 0, 0, 0, 0, timeNow.Location())
+	expected := time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), 0, 0, 0, 0, time.UTC)
 	actual := others.TruncateToDay(timeNow)
 	a.Equal(expected, actual)
 }
