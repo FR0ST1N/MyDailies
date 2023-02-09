@@ -13,6 +13,7 @@ import {
   useParams,
 } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { habitQuery } from '../pages/Habit'
 
 const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 const months = [
@@ -96,6 +97,7 @@ export const action =
     queryClient.invalidateQueries(
       entriesQuery(getEntryRequestObject(id)).queryKey
     )
+    queryClient.invalidateQueries(habitQuery(id).queryKey)
     toast('Checked-in for today', { icon: '🎉' })
     return res
   }
