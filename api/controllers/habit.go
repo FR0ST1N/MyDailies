@@ -104,6 +104,13 @@ func (controller *HabitController) GetHabit(c *gin.Context) {
 	}
 	habit.Streak = streak
 
+	longestStreak, err := controller.Repo.LongestStreak(habit.ID)
+	if err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+	habit.LongestStreak = longestStreak
+
 	c.JSON(http.StatusOK, habit)
 }
 

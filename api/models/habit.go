@@ -42,8 +42,9 @@ type HabitResponse struct {
 	UserID    uint      `json:"user_id"`
 
 	// Stats
-	EntriesCount int64 `gorm:"-:all" json:"entries_count"`
-	Streak       uint  `gorm:"-:all" json:"streak"`
+	EntriesCount  int64 `gorm:"-:all" json:"entries_count"`
+	Streak        uint  `gorm:"-:all" json:"streak"`
+	LongestStreak uint  `gorm:"-:all" json:"longest_streak"`
 }
 
 func (req *HabitRequest) GetHabitStruct() *Habit {

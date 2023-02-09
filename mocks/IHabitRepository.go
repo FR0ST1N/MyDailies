@@ -105,6 +105,27 @@ func (_m *IHabitRepository) IsUser(userId uint, habitId uint) (bool, error) {
 	return r0, r1
 }
 
+// LongestStreak provides a mock function with given fields: habitId
+func (_m *IHabitRepository) LongestStreak(habitId uint) (uint, error) {
+	ret := _m.Called(habitId)
+
+	var r0 uint
+	if rf, ok := ret.Get(0).(func(uint) uint); ok {
+		r0 = rf(habitId)
+	} else {
+		r0 = ret.Get(0).(uint)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(habitId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Read provides a mock function with given fields: u
 func (_m *IHabitRepository) Read(u *models.HabitResponse) error {
 	ret := _m.Called(u)

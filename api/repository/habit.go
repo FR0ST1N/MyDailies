@@ -17,6 +17,7 @@ type IHabitRepository interface {
 	IsUser(userId uint, habitId uint) (bool, error)
 	EntriesCount(habitId uint) (int64, error)
 	Streak(habitId uint) (uint, error)
+	LongestStreak(habitId uint) (uint, error)
 }
 
 func (repo *HabitRepository) Create(h *models.Habit) error {
@@ -73,6 +74,28 @@ func (repo *HabitRepository) Streak(habitId uint) (uint, error) {
 	FROM groups
 	GROUP BY date_group
 	HAVING julianday('now') - julianday(max_date) < 2;
+	`, habitId).Scan(&streak).Error
+	return streak.Streak, err
+}
+
+func (repo *HabitRepository) LongestStreak(habitId uint) (uint, error) {
+	var streak models.Streak
+	err := repo.DB.Raw(`
+	WITH groups
+	AS (SELECT
+	  date,
+	  DATE (date, - RANK () OVER (ORDER BY date) || ' days') AS date_group
+	FROM entries
+	WHERE habit_id = ?
+	ORDER BY date)
+	SELECT
+	  COUNT(*) AS streak,
+	  MIN(date) AS min_date,
+	  MAX(date) AS max_date
+	FROM groups
+	GROUP BY date_group
+	ORDER BY streak DESC
+	LIMIT 1;
 	`, habitId).Scan(&streak).Error
 	return streak.Streak, err
 }
