@@ -12,11 +12,16 @@ import {
 } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { QueryClient, useQuery } from '@tanstack/react-query'
+import { Stack } from '@mui/system'
+import StatCard from '../components/StatCard'
 
 interface HabitResponse {
   name: string
   created_at: string
   id: number
+  entries_count: number
+  streak: number
+  longest_streak: number
 }
 
 export const habitQuery = (id: string) => ({
@@ -83,6 +88,22 @@ function Habit() {
           </Tooltip>
         </Grid>
       </Grid>
+      <Typography level="body2" fontWeight="lg" sx={{ my: 1.5 }}>
+        Stats
+      </Typography>
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          display: 'flex',
+          overflowX: 'auto',
+          paddingBottom: 2,
+        }}
+      >
+        <StatCard title="Streak" stat={habit?.streak} />
+        <StatCard title="Longest Streak" stat={habit?.longest_streak} />
+        <StatCard title="Completed Days" stat={habit?.entries_count} />
+      </Stack>
       <Typography level="body2" fontWeight="lg" sx={{ my: 1.5 }}>
         Calendar
       </Typography>
