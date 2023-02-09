@@ -35,6 +35,7 @@ func (suite *HabitTestSuite) SetupSuite() {
 		arg.UserID = 1
 	})
 	mockRepo.On("EntriesCount", mock.AnythingOfType("uint")).Return(int64(1), nil)
+	mockRepo.On("Streak", mock.AnythingOfType("uint")).Return(uint(5), nil)
 	mockRepo.On("Update", mock.AnythingOfType("uint"), mock.AnythingOfType("*models.Habit")).Return(nil)
 	mockRepo.On("GetHabits", mock.AnythingOfType("*models.User")).Return(&[]models.Habit{
 		{ID: 1, Name: "Drink Water", UserID: 1, Entries: []models.Entry{{ID: 1, HabitID: 1}}},
@@ -87,7 +88,7 @@ func (suite *HabitTestSuite) TestGetHabitSuccess() {
 	a := assert.New(suite.T())
 	td := TestData{code: http.StatusOK}
 	w := td.NewHttpRequest(a, suite.router, "GET", "/api/habit/1", true, false)
-	expected := `{"name": "Drink Water", "id": 1, "user_id": 1, "created_at": "0001-01-01T00:00:00Z", "updated_at": "0001-01-01T00:00:00Z", "entries_count": 1}`
+	expected := `{"name": "Drink Water", "id": 1, "user_id": 1, "created_at": "0001-01-01T00:00:00Z", "updated_at": "0001-01-01T00:00:00Z", "entries_count": 1, "streak": 5}`
 	actual := w.Body.String()
 	a.JSONEq(expected, actual)
 }

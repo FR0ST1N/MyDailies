@@ -97,6 +97,13 @@ func (controller *HabitController) GetHabit(c *gin.Context) {
 	}
 	habit.EntriesCount = entriesCount
 
+	streak, err := controller.Repo.Streak(habit.ID)
+	if err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+	habit.Streak = streak
+
 	c.JSON(http.StatusOK, habit)
 }
 

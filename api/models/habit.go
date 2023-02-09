@@ -28,6 +28,12 @@ type HabitAllResponse struct {
 	LastActivity *time.Time `json:"last_activity"`
 }
 
+type Streak struct {
+	Streak  uint
+	MinDate string
+	MaxDate string
+}
+
 type HabitResponse struct {
 	ID        uint      `gorm:"primaryKey" json:"id"`
 	Name      string    `json:"name"`
@@ -35,7 +41,9 @@ type HabitResponse struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	UserID    uint      `json:"user_id"`
 
+	// Stats
 	EntriesCount int64 `gorm:"-:all" json:"entries_count"`
+	Streak       uint  `gorm:"-:all" json:"streak"`
 }
 
 func (req *HabitRequest) GetHabitStruct() *Habit {
