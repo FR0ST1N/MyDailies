@@ -56,7 +56,7 @@ func (controller *HabitController) GetHabits(c *gin.Context) {
 	}
 
 	// Map output to response struct
-	res := []*models.HabitResponse{}
+	res := []*models.HabitAllResponse{}
 	for i := 0; i < len(*habits); i++ {
 		var lastActivity *time.Time
 		n := len((*habits)[i].Entries)
@@ -67,7 +67,7 @@ func (controller *HabitController) GetHabits(c *gin.Context) {
 		}
 
 		// Add current habit to response
-		res = append(res, &models.HabitResponse{
+		res = append(res, &models.HabitAllResponse{
 			ID:           (*habits)[i].ID,
 			Name:         (*habits)[i].Name,
 			CreatedAt:    (*habits)[i].CreatedAt,
@@ -81,13 +81,36 @@ func (controller *HabitController) GetHabit(c *gin.Context) {
 	// Get habit id from context
 	hid, _ := c.Get("habit")
 
-	var habit models.Habit = models.Habit{ID: hid.(uint)}
+	habit := models.HabitResponse{ID: hid.(uint)}
 
 	// Read from db
 	if err := controller.Repo.Read(&habit); err != nil {
 		others.HandleGormError(c, err)
 		return
 	}
+
+	// Add stat fields
+	entriesCount, err := controller.Repo.EntriesCount(habit.ID)
+	if err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+	habit.EntriesCount = entriesCount
+
+	streak, err := controller.Repo.Streak(habit.ID)
+	if err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+	habit.Streak = streak
+
+	longestStreak, err := controller.Repo.LongestStreak(habit.ID)
+	if err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+	habit.LongestStreak = longestStreak
+
 	c.JSON(http.StatusOK, habit)
 }
 
