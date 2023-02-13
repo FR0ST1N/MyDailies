@@ -13,8 +13,7 @@ import (
 )
 
 type EntryController struct {
-	Repo      repository.IEntryRepository
-	HabitRepo repository.IHabitRepository
+	Repo repository.IEntryRepository
 }
 
 func (controller *EntryController) CreateEntry(c *gin.Context) {
