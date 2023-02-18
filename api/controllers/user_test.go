@@ -41,15 +41,17 @@ func (suite *UserTestSuite) SetupSuite() {
 		arg.Email = "john@example.com"
 		arg.ID = 1
 		arg.Password = "password"
+		arg.Timezone = "UTC"
 		arg.HashPassword()
 	})
 	mockRepo.On("HasAdmin").Return(gorm.ErrRecordNotFound).Once()
 	mockRepo.On("HasAdmin").Return(nil)
 	mockRepo.On("GetAllUsers").Return(&[]models.User{{
-		Admin: false,
-		Name:  "John",
-		Email: "john@example.com",
-		ID:    1,
+		Admin:    false,
+		Name:     "John",
+		Email:    "john@example.com",
+		ID:       1,
+		Timezone: "UTC",
 	}}, nil)
 
 	routes.InitUserRoutes(suite.router.Group("/api"), mockRepo)
@@ -95,6 +97,7 @@ func (suite *UserTestSuite) TestSetupAdminInput() {
 		{json: `{"email": "john", "password": "password", "name": "John"}`, code: http.StatusBadRequest, message: "Invalid email"},
 		{json: `{"email": "john@example.com", "password": "123", "name": "John"}`, code: http.StatusBadRequest, message: "Password less than 6 characters"},
 		{json: `{"email": "john@example.com", "password": "password", "name": ""}`, code: http.StatusBadRequest, message: "Empty name field"},
+		{json: `{"email": "john@example.com", "password": "password", "timezone": "test"}`, code: http.StatusBadRequest, message: "Invalid timezone"},
 	}
 	for i := 0; i < len(data); i++ {
 		data[i].NewHttpRequest(a, suite.router, "POST", "/api/user/setup-admin", false, false)
@@ -105,7 +108,7 @@ func (suite *UserTestSuite) TestGetUserSuccess() {
 	a := assert.New(suite.T())
 	td := TestData{code: http.StatusOK}
 	w := td.NewHttpRequest(a, suite.router, "GET", "/api/user", true, false)
-	expected := `{"email": "john@example.com", "id": 1, "admin": false, "name": "John", "created_at":"0001-01-01T00:00:00Z", "updated_at":"0001-01-01T00:00:00Z"}`
+	expected := `{"email": "john@example.com", "id": 1, "admin": false, "name": "John", "created_at":"0001-01-01T00:00:00Z", "updated_at":"0001-01-01T00:00:00Z", "timezone": "UTC"}`
 	actual := w.Body.String()
 	a.JSONEq(expected, actual)
 }
@@ -126,7 +129,7 @@ func (suite *UserTestSuite) TestCreateUserAuth() {
 
 func (suite *UserTestSuite) TestCreateUserSuccess() {
 	a := assert.New(suite.T())
-	td := TestData{code: http.StatusCreated, json: `{"admin": true, "email": "test@example.com", "password": "password", "name": "test"}`}
+	td := TestData{code: http.StatusCreated, json: `{"admin": true, "email": "test@example.com", "password": "password", "name": "test", "timezone": "UTC"}`}
 	td.NewHttpRequest(a, suite.router, "POST", "/api/user", true, true)
 }
 
@@ -136,6 +139,7 @@ func (suite *UserTestSuite) TestCreateUserInput() {
 		{json: `{"email": "john", "password": "password", "name": "John"}`, code: http.StatusBadRequest, message: "Invalid email"},
 		{json: `{"email": "john@example.com", "password": "123", "name": "John"}`, code: http.StatusBadRequest, message: "Password less than 6 characters"},
 		{json: `{"email": "john@example.com", "password": "password", "name": ""}`, code: http.StatusBadRequest, message: "Empty name field"},
+		{json: `{"email": "john@example.com", "password": "password", "timezone": "test"}`, code: http.StatusBadRequest, message: "Invalid timezone"},
 	}
 	for i := 0; i < len(data); i++ {
 		data[i].NewHttpRequest(a, suite.router, "POST", "/api/user", true, true)
@@ -154,7 +158,7 @@ func (suite *UserTestSuite) TestGetUsersSuccess() {
 	a := assert.New(suite.T())
 	td := TestData{code: http.StatusOK}
 	w := td.NewHttpRequest(a, suite.router, "GET", "/api/user/all", true, true)
-	expected := `[{"email": "john@example.com", "id": 1, "admin": false, "name": "John", "created_at":"0001-01-01T00:00:00Z", "updated_at":"0001-01-01T00:00:00Z"}]`
+	expected := `[{"email": "john@example.com", "id": 1, "admin": false, "name": "John", "created_at":"0001-01-01T00:00:00Z", "updated_at":"0001-01-01T00:00:00Z", "timezone": "UTC"}]`
 	actual := w.Body.String()
 	a.JSONEq(expected, actual)
 }
