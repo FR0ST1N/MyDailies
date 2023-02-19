@@ -38,6 +38,10 @@ type ChangePasswordRequest struct {
 	NewPassword string `json:"new_password"`
 }
 
+type PatchUserRequest struct {
+	Timezone string `json:"timezone"`
+}
+
 type UserLogin struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`

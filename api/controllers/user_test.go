@@ -186,3 +186,21 @@ func (suite *UserTestSuite) TestChangePasswordInvalidPassword() {
 	td := TestData{code: http.StatusBadRequest, json: `{"password": "password", "new_password": "12345"}`, message: "New password is less than 6 characters"}
 	td.NewHttpRequest(a, suite.router, "PATCH", "/api/user/password", true, false)
 }
+
+func (suite *UserTestSuite) TestPatchUserAuth() {
+	a := assert.New(suite.T())
+	td := TestData{code: http.StatusUnauthorized, message: "Can't patch when the request does not have a token"}
+	td.NewHttpRequest(a, suite.router, "PATCH", "/api/user", false, false)
+}
+
+func (suite *UserTestSuite) TestPatchUserInvalidTimezone() {
+	a := assert.New(suite.T())
+	td := TestData{code: http.StatusBadRequest, json: `{"timezone": "test"}`, message: "Invalid timezone"}
+	td.NewHttpRequest(a, suite.router, "PATCH", "/api/user", true, false)
+}
+
+func (suite *UserTestSuite) TestPatchUserValidTimezone() {
+	a := assert.New(suite.T())
+	td := TestData{code: http.StatusOK, json: `{"timezone": "Asia/Kolkata"}`}
+	td.NewHttpRequest(a, suite.router, "PATCH", "/api/user", true, false)
+}
