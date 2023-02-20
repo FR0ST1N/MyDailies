@@ -11,15 +11,18 @@ import {
   ListItemDecorator,
   Typography,
 } from '@mui/joy'
-import { Calendar, Mail, User } from 'react-feather'
+import { Calendar, Mail, User, Clock } from 'react-feather'
 import ChangePasswordModal from '../components/ChangePasswordModal'
 import { ActionFunctionArgs } from 'react-router-dom'
+import * as ct from 'countries-and-timezones'
+import { getTimezoneString } from '../others/timezone'
 
 export interface UserResponse {
   name: string
   email: string
   created_at: string
   admin: boolean
+  timezone: string
 }
 
 interface ChangePasswordRequest {
@@ -82,6 +85,17 @@ function Account() {
             <Mail size={18} />
           </ListItemDecorator>
           <ListItemContent>{user?.email}</ListItemContent>
+        </ListItem>
+
+        <ListItem>
+          <ListItemDecorator>
+            <Clock size={18} />
+          </ListItemDecorator>
+          <ListItemContent>
+            {user?.timezone === undefined
+              ? 'Empty'
+              : getTimezoneString(ct.getTimezone(user.timezone)!)}
+          </ListItemContent>
         </ListItem>
 
         <ListItem>
