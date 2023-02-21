@@ -8,7 +8,7 @@ import {
   ModalDialog,
   Radio,
   RadioGroup,
-  TextField,
+  Input,
   Typography,
 } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
@@ -39,31 +39,40 @@ function AddUserModal(props: AddUserModalProps) {
         <ModalClose />
         <Typography>Add New User</Typography>
         <Form method="post">
-          <TextField sx={{ my: 2 }} required placeholder="Name" name="name" />
-          <TextField
-            required
-            sx={{ my: 2 }}
-            type="email"
-            placeholder="Email"
-            name="email"
-          />
-          <TextField
-            required
-            sx={{ my: 2 }}
-            type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
-            endDecorator={
-              <PasswordInputDecorator
-                show={showPassword}
-                setShow={setShowPassword}
-                size="sm"
-              />
-            }
-            name="password"
-          />
+          <FormControl required>
+            <Input sx={{ my: 2 }} placeholder="Name" name="name" />
+          </FormControl>
+          <FormControl required>
+            <Input
+              sx={{ my: 2 }}
+              type="email"
+              placeholder="Email"
+              name="email"
+            />
+          </FormControl>
+          <FormControl required>
+            <Input
+              sx={{ my: 2 }}
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              endDecorator={
+                <PasswordInputDecorator
+                  show={showPassword}
+                  setShow={setShowPassword}
+                  size="sm"
+                />
+              }
+              name="password"
+            />
+          </FormControl>
           <FormControl required>
             <FormLabel>Admin</FormLabel>
-            <RadioGroup row defaultValue="false" name="admin" sx={{ my: 1 }}>
+            <RadioGroup
+              orientation="horizontal"
+              defaultValue="false"
+              name="admin"
+              sx={{ my: 1 }}
+            >
               <Radio label="No" value="false" />
               <Radio label="Yes" value="true" />
             </RadioGroup>

@@ -4,8 +4,9 @@ import {
   Modal,
   ModalClose,
   ModalDialog,
-  TextField,
+  Input,
   Typography,
+  FormControl,
 } from '@mui/joy'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
@@ -33,12 +34,9 @@ function AddHabitModal(props: AddHabitModalProps) {
         <ModalClose />
         <Typography>Add New Habit</Typography>
         <Form method="post">
-          <TextField
-            required
-            sx={{ my: 2 }}
-            placeholder="Habit Name"
-            name="habit-name"
-          />
+          <FormControl required>
+            <Input sx={{ my: 2 }} placeholder="Habit Name" name="habit-name" />
+          </FormControl>
           <Grid container justifyContent="flex-end">
             <Button loading={state === 'submitting'} type="submit">
               Create

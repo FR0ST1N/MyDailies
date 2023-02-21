@@ -1,4 +1,11 @@
-import { Button, Sheet, TextField, Typography } from '@mui/joy'
+import {
+  Button,
+  Sheet,
+  Input,
+  Typography,
+  FormControl,
+  FormLabel,
+} from '@mui/joy'
 import React, { useEffect, useState } from 'react'
 import { LogIn } from 'react-feather'
 import toast from 'react-hot-toast'
@@ -90,30 +97,26 @@ function Login() {
           <Typography level="body2">to continue to MyDailies.</Typography>
         </div>
         <Form method="post">
-          <TextField
-            required
-            name="email"
-            type="email"
-            placeholder="user@example.com"
-            label="Email"
-            size="lg"
-          />
-          <TextField
-            required
-            name="password"
-            placeholder="password"
-            label="Password"
-            size="lg"
-            type={showPassword ? 'text' : 'password'}
-            endDecorator={
-              <PasswordInputDecorator
-                show={showPassword}
-                setShow={setShowPassword}
-                size="md"
-              />
-            }
-            sx={{ mt: 1 }}
-          />
+          <FormControl required size="lg">
+            <FormLabel>Email</FormLabel>
+            <Input name="email" type="email" placeholder="user@example.com" />
+          </FormControl>
+          <FormControl required size="lg">
+            <FormLabel>Password</FormLabel>
+            <Input
+              name="password"
+              placeholder="password"
+              type={showPassword ? 'text' : 'password'}
+              endDecorator={
+                <PasswordInputDecorator
+                  show={showPassword}
+                  setShow={setShowPassword}
+                  size="md"
+                />
+              }
+              sx={{ mt: 1 }}
+            />
+          </FormControl>
           <Button
             startDecorator={<LogIn size={18} />}
             loading={state === 'submitting'}
