@@ -74,6 +74,8 @@ function ChangePasswordModal(props: ChangePasswordModalProps) {
               }
               loading={state === 'submitting'}
               type="submit"
+              name="intent"
+              value="password"
             >
               Change
             </Button>
