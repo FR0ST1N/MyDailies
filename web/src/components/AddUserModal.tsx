@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { Form, useNavigation } from 'react-router-dom'
 import PasswordInputDecorator from './PasswordInputDecorator'
+import TimezoneSelect from './TimezoneSelect'
 
 interface AddUserModalProps {
   open: boolean
@@ -34,7 +35,7 @@ function AddUserModal(props: AddUserModalProps) {
   })
 
   return (
-    <Modal open={open} onClose={() => setOpen(false)}>
+    <Modal sx={{ zIndex: 1000 }} open={open} onClose={() => setOpen(false)}>
       <ModalDialog>
         <ModalClose />
         <Typography>Add New User</Typography>
@@ -64,6 +65,9 @@ function AddUserModal(props: AddUserModalProps) {
               }
               name="password"
             />
+          </FormControl>
+          <FormControl required sx={{ my: 2 }}>
+            <TimezoneSelect />
           </FormControl>
           <FormControl required>
             <FormLabel>Admin</FormLabel>

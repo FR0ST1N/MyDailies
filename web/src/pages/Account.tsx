@@ -16,7 +16,7 @@ import { Calendar, Mail, User, Clock, Edit } from 'react-feather'
 import ChangePasswordModal from '../components/ChangePasswordModal'
 import { ActionFunctionArgs } from 'react-router-dom'
 import * as ct from 'countries-and-timezones'
-import { getTimezoneString } from '../others/timezone'
+import { getTimezoneFromString, getTimezoneString } from '../others/timezone'
 import EditUserModal from '../components/EditUserModal'
 import TimezoneSelect from '../components/TimezoneSelect'
 
@@ -69,8 +69,7 @@ export const action =
       )
       return res
     } else if (intent === 'info') {
-      const timezone =
-        formData.get('timezone')?.toString().split(' ')[1] ?? undefined
+      const timezone = getTimezoneFromString(formData) ?? undefined
       const data: PatchUserRequest = {
         timezone: timezone,
       }
