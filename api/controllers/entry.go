@@ -59,7 +59,7 @@ func (controller *EntryController) GetEntry(c *gin.Context) {
 	}
 
 	// Time range
-	start := time.Date(int(year), time.Month(month), 1, 0, 0, 0, 0, time.Now().Location())
+	start := time.Date(int(year), time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 	end := start.AddDate(0, 1, 0).Add(-time.Nanosecond)
 
 	entries, err := controller.Repo.ReadBetween(hid.(uint), start, end)
