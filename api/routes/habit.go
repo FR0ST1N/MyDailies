@@ -7,10 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitHabitRoutes(r *gin.RouterGroup, repo repository.IHabitRepository) {
+func InitHabitRoutes(r *gin.RouterGroup, repo repository.IHabitRepository, userRepo repository.IUserRepository) {
 	// Init controller
 	controller := controllers.HabitController{
-		Repo: repo,
+		Repo:     repo,
+		UserRepo: userRepo,
 	}
 
 	// Habit routes

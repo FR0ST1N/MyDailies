@@ -28,15 +28,21 @@ func (suite *EntryTestSuite) SetupSuite() {
 
 	mockRepo := new(mocks.IEntryRepository)
 	mockRepo.On("Create", mock.AnythingOfType("*models.Entry")).Return(nil)
-	mockRepo.On("Check", &models.Entry{HabitID: 2, Date: others.TruncateToDay(time.Now())}).Return(nil)
-	mockRepo.On("Check", mock.AnythingOfType("*models.Entry")).Return(gorm.ErrRecordNotFound)
+	mockRepo.On("Check", &models.Entry{HabitID: 2, Date: others.TruncateToDay(time.Now())}, time.UTC).Return(nil)
+	mockRepo.On("Check", mock.AnythingOfType("*models.Entry"), time.UTC).Return(gorm.ErrRecordNotFound)
 	mockRepo.On("ReadBetween", mock.AnythingOfType("uint"), mock.AnythingOfType("time.Time"), mock.AnythingOfType("time.Time")).Return(&[]models.Entry{{ID: 1, HabitID: 1}, {ID: 2, HabitID: 1}}, nil)
 
 	mockHabitRepo := new(mocks.IHabitRepository)
 	mockHabitRepo.On("IsUser", mock.AnythingOfType("uint"), uint(3)).Return(false, nil)
 	mockHabitRepo.On("IsUser", mock.AnythingOfType("uint"), mock.AnythingOfType("uint")).Return(true, nil)
 
-	routes.InitEntryRoutes(suite.router.Group("/api"), mockRepo, mockHabitRepo)
+	mockUserRepo := new(mocks.IUserRepository)
+	mockUserRepo.On("FindByID", mock.AnythingOfType("*models.User")).Return(nil).Run(func(args mock.Arguments) {
+		arg := args.Get(0).(*models.User)
+		arg.Timezone = "UTC"
+	})
+
+	routes.InitEntryRoutes(suite.router.Group("/api"), mockRepo, mockHabitRepo, mockUserRepo)
 }
 
 func TestEntryTestSuite(t *testing.T) {
