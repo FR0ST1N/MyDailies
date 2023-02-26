@@ -7,4 +7,5 @@ const (
 	StrIncorrectPassword = "Incorrect password"
 	StrAdminExists       = "Admin user already exists"
 	StrEmptyHabitName    = "Empty habit name"
+	StrInvalidTimezone   = "Invalid timezone"
 )

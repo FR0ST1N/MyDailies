@@ -23,6 +23,7 @@ func InitUserRoutes(r *gin.RouterGroup, repo repository.IUserRepository) {
 		// User routes
 		userRoutes.PATCH("/password", middlewares.Auth(), controller.ChangePassword)
 		userRoutes.GET("", middlewares.Auth(), controller.GetUser)
+		userRoutes.PATCH("", middlewares.Auth(), controller.PatchUser)
 
 		// Admin routes
 		userRoutes.POST("", middlewares.Auth(), middlewares.Admin(), controller.CreateUser)

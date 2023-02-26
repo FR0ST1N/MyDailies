@@ -11,7 +11,8 @@ import (
 )
 
 type HabitController struct {
-	Repo repository.IHabitRepository
+	Repo     repository.IHabitRepository
+	UserRepo repository.IUserRepository
 }
 
 func (controller *HabitController) CreateHabit(c *gin.Context) {
@@ -89,6 +90,15 @@ func (controller *HabitController) GetHabit(c *gin.Context) {
 		return
 	}
 
+	// Get user timezone
+	id, _ := c.Get("user")
+	user := models.User{ID: id.(uint)}
+	if err := controller.UserRepo.FindByID(&user); err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+	loc, _ := others.GetTZLocation(user.Timezone)
+
 	// Add stat fields
 	entriesCount, err := controller.Repo.EntriesCount(habit.ID)
 	if err != nil {
@@ -97,7 +107,7 @@ func (controller *HabitController) GetHabit(c *gin.Context) {
 	}
 	habit.EntriesCount = entriesCount
 
-	streak, err := controller.Repo.Streak(habit.ID)
+	streak, err := controller.Repo.Streak(habit.ID, loc)
 	if err != nil {
 		others.HandleGormError(c, err)
 		return

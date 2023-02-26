@@ -33,8 +33,10 @@ docker compose up
 ```bash
 curl -X POST http://localhost:8080/api/user/setup-admin \
 -H 'Content-Type: application/json' \
--d '{"email": "email@example.com", "password": "password", "name": "Your Name"}'
+-d '{"email": "email@example.com", "password": "password", "name": "Your Name", "timezone": "TZ database name"}'
 ```
+
+[List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
 ## Development
 

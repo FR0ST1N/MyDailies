@@ -8,6 +8,7 @@ RUN go build -o mydailies
 
 FROM alpine:3.14
 WORKDIR /app
+RUN apk --no-cache add tzdata
 COPY --from=build /app/mydailies ./
 ENV PORT 8080
 ENV GIN_MODE release

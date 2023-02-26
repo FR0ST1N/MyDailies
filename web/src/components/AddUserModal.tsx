@@ -8,13 +8,14 @@ import {
   ModalDialog,
   Radio,
   RadioGroup,
-  TextField,
+  Input,
   Typography,
 } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { Form, useNavigation } from 'react-router-dom'
 import PasswordInputDecorator from './PasswordInputDecorator'
+import TimezoneSelect from './TimezoneSelect'
 
 interface AddUserModalProps {
   open: boolean
@@ -34,36 +35,48 @@ function AddUserModal(props: AddUserModalProps) {
   })
 
   return (
-    <Modal open={open} onClose={() => setOpen(false)}>
+    <Modal sx={{ zIndex: 1000 }} open={open} onClose={() => setOpen(false)}>
       <ModalDialog>
         <ModalClose />
         <Typography>Add New User</Typography>
         <Form method="post">
-          <TextField sx={{ my: 2 }} required placeholder="Name" name="name" />
-          <TextField
-            required
-            sx={{ my: 2 }}
-            type="email"
-            placeholder="Email"
-            name="email"
-          />
-          <TextField
-            required
-            sx={{ my: 2 }}
-            type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
-            endDecorator={
-              <PasswordInputDecorator
-                show={showPassword}
-                setShow={setShowPassword}
-                size="sm"
-              />
-            }
-            name="password"
-          />
+          <FormControl required>
+            <Input sx={{ my: 2 }} placeholder="Name" name="name" />
+          </FormControl>
+          <FormControl required>
+            <Input
+              sx={{ my: 2 }}
+              type="email"
+              placeholder="Email"
+              name="email"
+            />
+          </FormControl>
+          <FormControl required>
+            <Input
+              sx={{ my: 2 }}
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              endDecorator={
+                <PasswordInputDecorator
+                  show={showPassword}
+                  setShow={setShowPassword}
+                  size="sm"
+                />
+              }
+              name="password"
+            />
+          </FormControl>
+          <FormControl required sx={{ my: 2 }}>
+            <TimezoneSelect />
+          </FormControl>
           <FormControl required>
             <FormLabel>Admin</FormLabel>
-            <RadioGroup row defaultValue="false" name="admin" sx={{ my: 1 }}>
+            <RadioGroup
+              orientation="horizontal"
+              defaultValue="false"
+              name="admin"
+              sx={{ my: 1 }}
+            >
               <Radio label="No" value="false" />
               <Radio label="Yes" value="true" />
             </RadioGroup>

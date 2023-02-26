@@ -7,10 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitEntryRoutes(r *gin.RouterGroup, repo repository.IEntryRepository, habitRepo repository.IHabitRepository) {
+func InitEntryRoutes(r *gin.RouterGroup, repo repository.IEntryRepository, habitRepo repository.IHabitRepository, userRepo repository.IUserRepository) {
 	// Init controller
 	controller := controllers.EntryController{
-		Repo: repo,
+		Repo:     repo,
+		UserRepo: userRepo,
 	}
 
 	// Entry routes

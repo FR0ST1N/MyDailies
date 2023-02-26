@@ -14,7 +14,7 @@ type EntryRepository struct {
 
 type IEntryRepository interface {
 	Create(e *models.Entry) error
-	Check(e *models.Entry) error
+	Check(e *models.Entry, loc *time.Location) error
 	ReadBetween(hid uint, start time.Time, end time.Time) (*[]models.Entry, error)
 }
 
@@ -23,8 +23,8 @@ func (repo *EntryRepository) Create(e *models.Entry) error {
 	return err
 }
 
-func (repo *EntryRepository) Check(e *models.Entry) error {
-	t := time.Now()
+func (repo *EntryRepository) Check(e *models.Entry, loc *time.Location) error {
+	t := time.Now().In(loc)
 	err := repo.DB.Where("habit_id = ? AND date >= ?", e.HabitID, others.TruncateToDay(t)).Take(&e).Error
 	return err
 }

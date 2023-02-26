@@ -4,19 +4,19 @@ import {
   Modal,
   ModalClose,
   ModalDialog,
-  Input,
   Typography,
-  FormControl,
 } from '@mui/joy'
+import { Box } from '@mui/system'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { Form, useNavigation } from 'react-router-dom'
 
-interface AddHabitModalProps {
+interface EditUserModalProps {
   open: boolean
   setOpen: Function
+  children: React.ReactNode
 }
-function AddHabitModal(props: AddHabitModalProps) {
+function EditUserModal(props: EditUserModalProps) {
   const { open, setOpen } = props
 
   const { state } = useNavigation()
@@ -24,22 +24,25 @@ function AddHabitModal(props: AddHabitModalProps) {
   useEffect(() => {
     if (state === 'loading' && open) {
       setOpen(false)
-      toast.success('Added new habit')
+      toast.success('Updated')
     }
   })
 
   return (
-    <Modal open={open} onClose={() => setOpen(false)}>
+    <Modal sx={{ zIndex: 1000 }} open={open} onClose={() => setOpen(false)}>
       <ModalDialog>
         <ModalClose />
-        <Typography>Add New Habit</Typography>
-        <Form method="post">
-          <FormControl required>
-            <Input sx={{ my: 2 }} placeholder="Habit Name" name="habit-name" />
-          </FormControl>
+        <Typography>Edit</Typography>
+        <Form method="patch">
+          <Box sx={{ my: 2 }}>{props.children}</Box>
           <Grid container justifyContent="flex-end">
-            <Button loading={state === 'submitting'} type="submit">
-              Create
+            <Button
+              loading={state === 'submitting'}
+              type="submit"
+              name="intent"
+              value="info"
+            >
+              Update
             </Button>
           </Grid>
         </Form>
@@ -48,4 +51,4 @@ function AddHabitModal(props: AddHabitModalProps) {
   )
 }
 
-export default AddHabitModal
+export default EditUserModal
