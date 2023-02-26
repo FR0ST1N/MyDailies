@@ -34,6 +34,7 @@ const months = [
 interface EntryResponse {
   id: number
   date: string
+  created_at: string
 }
 
 interface EntryQueryParams {
@@ -108,7 +109,7 @@ interface CalendarOutletProps {
 
 function Calendar() {
   const [date, setDate] = useState(new Date())
-  const [completedDays, setCompletedDays] = useState(new Set())
+  const [completedDays, setCompletedDays] = useState(new Map<number, string>())
 
   const { setDisableCheckIn } = useOutletContext<CalendarOutletProps>()
 
@@ -125,11 +126,12 @@ function Calendar() {
   )
 
   useEffect(() => {
-    const days = new Set()
+    const days = new Map<number, string>()
     if (entries && Array.isArray(entries)) {
       entries.forEach((data) => {
         const currentDate = dayjs(data.date)
-        days.add(currentDate.date())
+        const createdAt = dayjs(data.created_at)
+        days.set(currentDate.date(), createdAt.toDate().toLocaleTimeString())
         // Disable the check in button if entry exists for today
         if (currentDate.isToday()) {
           setDisableCheckIn(true)
@@ -211,7 +213,11 @@ function Calendar() {
                 xs={1.5}
                 justifyContent="center"
               >
-                <CalendarDay completed={completedDays.has(day)} day={day} />
+                <CalendarDay
+                  completed={completedDays.has(day)}
+                  day={day}
+                  createdAt={completedDays.get(day)}
+                />
               </Grid>
             ) : (
               <Grid key={`week-${i}-day-${j}`} container xs={1.5} />
