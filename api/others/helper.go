@@ -47,3 +47,8 @@ func GetJWTSecretKey() []byte {
 	}
 	return []byte(s)
 }
+
+func GetTZLocation(tz string) (*time.Location, error) {
+	loc, err := time.LoadLocation(tz)
+	return loc, err
+}

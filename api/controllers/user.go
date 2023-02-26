@@ -171,3 +171,32 @@ func (controller *UserController) GetUsers(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, users)
 }
+
+func (controller *UserController) PatchUser(c *gin.Context) {
+	// Get input
+	var req models.PatchUserRequest
+	if err := c.BindJSON(&req); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	// Init the user struct
+	id, _ := c.Get("user")
+	user := models.User{ID: id.(uint)}
+
+	// Validate and set timezone
+	if _, err := others.GetTZLocation(req.Timezone); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	} else {
+		user.Timezone = req.Timezone
+	}
+
+	// Update
+	if err := controller.Repo.Update(id.(uint), &user); err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+
+	c.Status(http.StatusOK)
+}

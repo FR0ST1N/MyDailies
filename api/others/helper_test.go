@@ -129,3 +129,34 @@ func TestGetJWTSecretKey(t *testing.T) {
 		a.Equal([]byte(s), v)
 	}
 }
+
+func TestGetTZLocation(t *testing.T) {
+	a := assert.New(t)
+
+	testTimezone := "Asia/Kolkata"
+	testLocation, _ := time.LoadLocation(testTimezone)
+
+	var tests = []struct {
+		tz       string
+		hasError bool
+		expected *time.Location
+	}{
+		// Success
+		{"UTC", false, time.UTC},
+		// Success 2
+		{testTimezone, false, testLocation},
+		// Invalid string
+		{"test", true, nil},
+		// Empty string
+		{"", false, time.UTC},
+	}
+	for _, test := range tests {
+		loc, err := others.GetTZLocation(test.tz)
+		if test.hasError {
+			a.Error(err)
+		} else {
+			a.Equal(test.expected, loc)
+			a.NoError(err)
+		}
+	}
+}

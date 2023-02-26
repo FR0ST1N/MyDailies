@@ -13,8 +13,8 @@ func InitRoutes(db *gorm.DB) *gin.Engine {
 	apiRoutes := router.Group("/api")
 	{
 		InitUserRoutes(apiRoutes, &repository.UserRepository{DB: db})
-		InitHabitRoutes(apiRoutes, &repository.HabitRepository{DB: db})
-		InitEntryRoutes(apiRoutes, &repository.EntryRepository{DB: db}, &repository.HabitRepository{DB: db})
+		InitHabitRoutes(apiRoutes, &repository.HabitRepository{DB: db}, &repository.UserRepository{DB: db})
+		InitEntryRoutes(apiRoutes, &repository.EntryRepository{DB: db}, &repository.HabitRepository{DB: db}, &repository.UserRepository{DB: db})
 	}
 
 	return router

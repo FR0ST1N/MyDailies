@@ -4,8 +4,9 @@ import {
   Modal,
   ModalClose,
   ModalDialog,
-  TextField,
+  Input,
   Typography,
+  FormControl,
 } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
@@ -37,36 +38,39 @@ function ChangePasswordModal(props: ChangePasswordModalProps) {
         <ModalClose />
         <Typography>Change Password</Typography>
         <Form method="patch">
-          <TextField
-            required
-            sx={{ my: 2 }}
-            placeholder="Password"
-            name="password"
-            type={showPassword ? 'text' : 'password'}
-            endDecorator={
-              <PasswordInputDecorator
-                show={showPassword}
-                setShow={setShowPassword}
-                size="sm"
-              />
-            }
-          />
-          <TextField
-            required
-            sx={{ my: 2 }}
-            onChange={(e) => setNewPassword(e.target.value)}
-            placeholder="New Password"
-            name="new-password"
-            type="password"
-          />
-          <TextField
-            required
-            sx={{ my: 2 }}
-            onChange={(e) => setReenterNewPassword(e.target.value)}
-            placeholder="Reenter New Password"
-            name="new-password-reenter"
-            type="password"
-          />
+          <FormControl required>
+            <Input
+              sx={{ my: 2 }}
+              placeholder="Password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              endDecorator={
+                <PasswordInputDecorator
+                  show={showPassword}
+                  setShow={setShowPassword}
+                  size="sm"
+                />
+              }
+            />
+          </FormControl>
+          <FormControl required>
+            <Input
+              sx={{ my: 2 }}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="New Password"
+              name="new-password"
+              type="password"
+            />
+          </FormControl>
+          <FormControl required>
+            <Input
+              sx={{ my: 2 }}
+              onChange={(e) => setReenterNewPassword(e.target.value)}
+              placeholder="Reenter New Password"
+              name="new-password-reenter"
+              type="password"
+            />
+          </FormControl>
           <Grid container justifyContent="flex-end">
             <Button
               disabled={
@@ -74,6 +78,8 @@ function ChangePasswordModal(props: ChangePasswordModalProps) {
               }
               loading={state === 'submitting'}
               type="submit"
+              name="intent"
+              value="password"
             >
               Change
             </Button>

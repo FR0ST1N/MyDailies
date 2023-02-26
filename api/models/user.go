@@ -21,6 +21,7 @@ type User struct {
 	Admin        bool    `gorm:"not null;default:false;index" json:"admin"`
 	Password     string  `gorm:"-" json:"-"`
 	PasswordHash string  `gorm:"not null" json:"-"`
+	Timezone     string  `gorm:"size:128;not null;default:UTC" json:"timezone"`
 	Habits       []Habit `json:"-"`
 }
 
@@ -29,11 +30,16 @@ type UserRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Admin    bool   `json:"admin"`
+	Timezone string `json:"timezone"`
 }
 
 type ChangePasswordRequest struct {
 	Password    string `json:"password"`
 	NewPassword string `json:"new_password"`
+}
+
+type PatchUserRequest struct {
+	Timezone string `json:"timezone"`
 }
 
 type UserLogin struct {
@@ -47,6 +53,7 @@ func (req *UserRequest) GetUserStruct() *User {
 		Email:    req.Email,
 		Password: req.Password,
 		Admin:    req.Admin,
+		Timezone: req.Timezone,
 	}
 }
 
@@ -89,6 +96,11 @@ func (u *User) Validate() error {
 	// Validate email input
 	if _, err := mail.ParseAddress(u.Email); err != nil {
 		return errors.New(others.StrInvalidEmail)
+	}
+
+	// Validate timezone
+	if _, err := others.GetTZLocation(u.Timezone); err != nil {
+		return errors.New(others.StrInvalidTimezone)
 	}
 
 	return nil

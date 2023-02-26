@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/FR0ST1N/MyDailies/api/models"
 	"gorm.io/gorm"
 )
@@ -16,7 +19,7 @@ type IHabitRepository interface {
 	GetHabits(u *models.User) (*[]models.Habit, error)
 	IsUser(userId uint, habitId uint) (bool, error)
 	EntriesCount(habitId uint) (int64, error)
-	Streak(habitId uint) (uint, error)
+	Streak(habitId uint, loc *time.Location) (uint, error)
 	LongestStreak(habitId uint) (uint, error)
 }
 
@@ -57,8 +60,10 @@ func (repo *HabitRepository) EntriesCount(habitId uint) (int64, error) {
 	return count, err
 }
 
-func (repo *HabitRepository) Streak(habitId uint) (uint, error) {
+func (repo *HabitRepository) Streak(habitId uint, loc *time.Location) (uint, error) {
 	var streak models.Streak
+	t := time.Now().In(loc)
+	now := fmt.Sprintf("%d-%02d-%d", t.Year(), int(t.Month()), t.Day())
 	err := repo.DB.Raw(`
 	WITH groups
 	AS (SELECT
@@ -73,8 +78,8 @@ func (repo *HabitRepository) Streak(habitId uint) (uint, error) {
 	  MAX(date) AS max_date
 	FROM groups
 	GROUP BY date_group
-	HAVING julianday('now') - julianday(max_date) < 2;
-	`, habitId).Scan(&streak).Error
+	HAVING julianday(?) - julianday(max_date) < 2;
+	`, habitId, now).Scan(&streak).Error
 	return streak.Streak, err
 }
 

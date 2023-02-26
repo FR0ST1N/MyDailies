@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/FR0ST1N/MyDailies/api/models"
 	"github.com/FR0ST1N/MyDailies/api/routes"
@@ -35,7 +36,7 @@ func (suite *HabitTestSuite) SetupSuite() {
 		arg.UserID = 1
 	})
 	mockRepo.On("EntriesCount", mock.AnythingOfType("uint")).Return(int64(1), nil)
-	mockRepo.On("Streak", mock.AnythingOfType("uint")).Return(uint(5), nil)
+	mockRepo.On("Streak", mock.AnythingOfType("uint"), time.UTC).Return(uint(5), nil)
 	mockRepo.On("LongestStreak", mock.AnythingOfType("uint")).Return(uint(10), nil)
 	mockRepo.On("Update", mock.AnythingOfType("uint"), mock.AnythingOfType("*models.Habit")).Return(nil)
 	mockRepo.On("GetHabits", mock.AnythingOfType("*models.User")).Return(&[]models.Habit{
@@ -44,7 +45,13 @@ func (suite *HabitTestSuite) SetupSuite() {
 	}, nil)
 	mockRepo.On("IsUser", mock.AnythingOfType("uint"), mock.AnythingOfType("uint")).Return(true, nil)
 
-	routes.InitHabitRoutes(suite.router.Group("/api"), mockRepo)
+	mockUserRepo := new(mocks.IUserRepository)
+	mockUserRepo.On("FindByID", mock.AnythingOfType("*models.User")).Return(nil).Run(func(args mock.Arguments) {
+		arg := args.Get(0).(*models.User)
+		arg.Timezone = "UTC"
+	})
+
+	routes.InitHabitRoutes(suite.router.Group("/api"), mockRepo, mockUserRepo)
 }
 
 func TestHabitTestSuite(t *testing.T) {

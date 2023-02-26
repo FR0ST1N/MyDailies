@@ -9,12 +9,14 @@ import AddUserModal from '../components/AddUserModal'
 import AdminChip from '../components/AdminChip'
 import TitleWithAddIcon from '../components/TitleWithAddIcon'
 import { apiFetch } from '../others/api'
+import { getTimezoneFromString } from '../others/timezone'
 
 interface AddUserRequest {
   name: string
   email: string
   password: string
   admin: boolean
+  timezone: string
 }
 
 export const usersQuery = () => ({
@@ -40,6 +42,7 @@ export const action =
       email: formData.get('email')?.toString() ?? '',
       password: formData.get('password')?.toString() ?? '',
       admin: formData.get('admin')?.toString() === 'true' ?? false,
+      timezone: getTimezoneFromString(formData) ?? 'Etc/UTC',
     }
     const res = await apiFetch<AddUserRequest, any>('/api/user', 'POST', data)
     queryClient.invalidateQueries(usersQuery().queryKey)

@@ -13,18 +13,28 @@ import (
 )
 
 type EntryController struct {
-	Repo repository.IEntryRepository
+	Repo     repository.IEntryRepository
+	UserRepo repository.IUserRepository
 }
 
 func (controller *EntryController) CreateEntry(c *gin.Context) {
 	// Get habit id
 	hid, _ := c.Get("habit")
 
-	entry := models.Entry{HabitID: hid.(uint), Date: others.TruncateToDay(time.Now())}
+	// Get user timezone
+	id, _ := c.Get("user")
+	user := models.User{ID: id.(uint)}
+	if err := controller.UserRepo.FindByID(&user); err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+	loc, _ := others.GetTZLocation(user.Timezone)
+
+	entry := models.Entry{HabitID: hid.(uint), Date: others.TruncateToDay(time.Now().In(loc))}
 
 	// Check if entry already exists for that day and habit
 	hasRecord := true
-	if err := controller.Repo.Check(&entry); err != nil {
+	if err := controller.Repo.Check(&entry, loc); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			hasRecord = false
 		} else {
@@ -59,7 +69,7 @@ func (controller *EntryController) GetEntry(c *gin.Context) {
 	}
 
 	// Time range
-	start := time.Date(int(year), time.Month(month), 1, 0, 0, 0, 0, time.Now().Location())
+	start := time.Date(int(year), time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 	end := start.AddDate(0, 1, 0).Add(-time.Nanosecond)
 
 	entries, err := controller.Repo.ReadBetween(hid.(uint), start, end)
