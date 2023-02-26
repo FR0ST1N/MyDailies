@@ -28,7 +28,7 @@ function CalendarDay(props: CalendarDayProps) {
         <Typography
           textColor={mode === 'light' && completed ? 'white' : ''}
           level="body1"
-          sx={{ cursor: 'inherit' }}
+          sx={{ cursor: 'inherit', userSelect: 'none' }}
         >
           {day}
         </Typography>
