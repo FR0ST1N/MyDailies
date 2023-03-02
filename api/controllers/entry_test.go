@@ -28,7 +28,7 @@ func (suite *EntryTestSuite) SetupSuite() {
 
 	mockRepo := new(mocks.IEntryRepository)
 	mockRepo.On("Create", mock.AnythingOfType("*models.Entry")).Return(nil)
-	mockRepo.On("Check", &models.Entry{HabitID: 2, Date: others.TruncateToDay(time.Now())}, time.UTC).Return(nil)
+	mockRepo.On("Check", &models.Entry{HabitID: 2, Date: others.TruncateToDay(time.Now().UTC())}, time.UTC).Return(nil)
 	mockRepo.On("Check", mock.AnythingOfType("*models.Entry"), time.UTC).Return(gorm.ErrRecordNotFound)
 	mockRepo.On("ReadBetween", mock.AnythingOfType("uint"), mock.AnythingOfType("time.Time"), mock.AnythingOfType("time.Time")).Return(&[]models.Entry{{ID: 1, HabitID: 1}, {ID: 2, HabitID: 1}}, nil)
 
