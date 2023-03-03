@@ -63,7 +63,7 @@ func (repo *HabitRepository) EntriesCount(habitId uint) (int64, error) {
 func (repo *HabitRepository) Streak(habitId uint, loc *time.Location) (uint, error) {
 	var streak models.Streak
 	t := time.Now().In(loc)
-	now := fmt.Sprintf("%d-%02d-%d", t.Year(), int(t.Month()), t.Day())
+	now := fmt.Sprintf("%d-%02d-%02d", t.Year(), int(t.Month()), t.Day())
 	err := repo.DB.Raw(`
 	WITH groups
 	AS (SELECT
