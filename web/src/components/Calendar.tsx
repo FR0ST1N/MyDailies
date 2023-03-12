@@ -205,8 +205,8 @@ function Calendar() {
           spacing={1}
           sx={{ py: 1.5 }}
         >
-          {week.map((day, j) =>
-            day != null ? (
+          {week.map((date, j) =>
+            date != null ? (
               <Grid
                 key={`week-${i}-day-${j}`}
                 container
@@ -214,9 +214,9 @@ function Calendar() {
                 justifyContent="center"
               >
                 <CalendarDay
-                  completed={completedDays.has(day)}
-                  day={day}
-                  createdAt={completedDays.get(day)}
+                  completed={completedDays.has(date.getDate())}
+                  date={date}
+                  createdAt={completedDays.get(date.getDate())}
                 />
               </Grid>
             ) : (
