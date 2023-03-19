@@ -79,3 +79,41 @@ func (controller *EntryController) GetEntry(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, entries)
 }
+
+func (controller *EntryController) PatchNote(c *gin.Context) {
+
+	var req models.NoteRequest
+
+	if err := c.BindJSON(&req); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	id, err := others.GetParamUint(c, "entryId")
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, others.GetErrJSON("Id Invalid"))
+		return
+	}
+
+	// Check if entry already exists for that day and habit
+	if _, err := controller.Repo.CheckIfEntryExists(id); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.AbortWithStatusJSON(http.StatusConflict, others.GetErrJSON("Id Entry does not exist"))
+			return
+		} else {
+			others.HandleGormError(c, err)
+			return
+		}
+
+	}
+
+	err = controller.Repo.Update(id, &models.Entry{Note: req.Note})
+
+	if err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
