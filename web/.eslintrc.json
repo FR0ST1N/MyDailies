@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "react-app",
+    "prettier",
+    "plugin:prettier/recommended",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": ["react-refresh", "@typescript-eslint", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "react-refresh/only-export-components": "error",
+    "prettier/prettier": "warn"
+  },
+  "root": true
+}
