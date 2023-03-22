@@ -4,7 +4,7 @@ import { Eye, EyeOff } from 'react-feather'
 
 interface PasswordInputDecoratorProps {
   show: boolean
-  setShow: Function
+  setShow: (show: boolean) => void
   size: 'sm' | 'md'
 }
 function PasswordInputDecorator({

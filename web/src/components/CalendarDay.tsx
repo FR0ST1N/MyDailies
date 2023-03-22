@@ -19,7 +19,7 @@ function CalendarDay(props: CalendarDayProps) {
   const isToday = dayjs(date).isToday()
 
   // Sheet color stuff
-  var sheetColor: ColorPaletteProp = 'neutral'
+  let sheetColor: ColorPaletteProp = 'neutral'
   if (completed) {
     sheetColor = 'success'
   } else if (isToday) {

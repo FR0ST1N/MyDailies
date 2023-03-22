@@ -2,48 +2,10 @@ import { Container, Stack, Typography } from '@mui/joy'
 import React, { useState } from 'react'
 import AddHabitModal from '../components/AddHabitModal'
 import HabitCard from '../components/HabitCard'
-import { apiFetch } from '../others/api'
-import { QueryClient, useQuery } from '@tanstack/react-query'
-import { ActionFunctionArgs } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import TitleWithAddIcon from '../components/TitleWithAddIcon'
 import { Frown } from 'react-feather'
-
-interface HomeCardResponse {
-  id: number
-  name: string
-  created_at: string
-  last_activity: string
-}
-
-interface AddHabitRequest {
-  name: string
-}
-
-export const habitsQuery = () => ({
-  queryKey: ['habits'],
-  queryFn: async () =>
-    apiFetch<null, HomeCardResponse[]>('/api/habit/all', 'GET', null),
-})
-
-export const loader = (queryClient: QueryClient) => async () => {
-  const query = habitsQuery()
-  return (
-    queryClient.getQueryData(query.queryKey) ??
-    (await queryClient.fetchQuery(query))
-  )
-}
-
-export const action =
-  (queryClient: QueryClient) =>
-  async ({ request }: ActionFunctionArgs) => {
-    const formData = await request.formData()
-    const data: AddHabitRequest = {
-      name: formData.get('habit-name')?.toString() ?? '',
-    }
-    const res = await apiFetch<AddHabitRequest, any>('/api/habit', 'POST', data)
-    queryClient.invalidateQueries(habitsQuery().queryKey)
-    return res
-  }
+import { habitsQuery } from '../others/query'
 
 function Home() {
   const [openAddModal, setOpenAddModal] = useState(false)

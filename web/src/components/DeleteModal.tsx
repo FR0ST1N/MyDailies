@@ -6,35 +6,8 @@ import {
   ModalDialog,
   Typography,
 } from '@mui/joy'
-import { QueryClient } from '@tanstack/react-query'
 import React from 'react'
-import toast from 'react-hot-toast'
-import {
-  ActionFunctionArgs,
-  Form,
-  redirect,
-  useNavigate,
-  useNavigation,
-} from 'react-router-dom'
-import { apiFetch } from '../others/api'
-import { habitQuery } from '../pages/Habit'
-import { habitsQuery } from '../pages/Home'
-
-export const action =
-  (queryClient: QueryClient) =>
-  async ({ params }: ActionFunctionArgs) => {
-    const id = params.habitId as string
-    await apiFetch<null, any>(`/api/habit/${id}`, 'DELETE', null)
-    // Remove
-    queryClient.removeQueries(habitQuery(id).queryKey)
-    queryClient.removeQueries(['entries', +id])
-    // Invalidate
-    queryClient.invalidateQueries(habitsQuery().queryKey)
-
-    toast('Deleted habit', { icon: '🗑️' })
-    // Return home
-    return redirect('/')
-  }
+import { Form, useNavigate, useNavigation } from 'react-router-dom'
 
 function DeleteModal() {
   const { state } = useNavigation()

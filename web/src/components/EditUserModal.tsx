@@ -13,7 +13,7 @@ import { Form, useNavigation } from 'react-router-dom'
 
 interface EditUserModalProps {
   open: boolean
-  setOpen: Function
+  setOpen: (open: boolean) => void
   children: React.ReactNode
 }
 function EditUserModal(props: EditUserModalProps) {

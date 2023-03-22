@@ -14,7 +14,7 @@ import { Form, useNavigation } from 'react-router-dom'
 
 interface AddHabitModalProps {
   open: boolean
-  setOpen: Function
+  setOpen: (open: boolean) => void
 }
 function AddHabitModal(props: AddHabitModalProps) {
   const { open, setOpen } = props

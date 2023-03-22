@@ -1,9 +1,7 @@
 import { Typography, Container, Grid, IconButton, Tooltip } from '@mui/joy'
 import React, { useState } from 'react'
 import { CheckCircle, Trash2 } from 'react-feather'
-import { apiFetch } from '../others/api'
 import {
-  LoaderFunctionArgs,
   Outlet,
   useNavigate,
   useNavigation,
@@ -11,34 +9,10 @@ import {
   useSubmit,
 } from 'react-router-dom'
 import dayjs from 'dayjs'
-import { QueryClient, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { Stack } from '@mui/system'
 import StatCard from '../components/StatCard'
-
-interface HabitResponse {
-  name: string
-  created_at: string
-  id: number
-  entries_count: number
-  streak: number
-  longest_streak: number
-}
-
-export const habitQuery = (id: string) => ({
-  queryKey: ['habit', id],
-  queryFn: async () =>
-    apiFetch<null, HabitResponse>(`/api/habit/${id}`, 'GET', null),
-})
-
-export const loader =
-  (queryClient: QueryClient) =>
-  async ({ params }: LoaderFunctionArgs) => {
-    const query = habitQuery(params.habitId as string)
-    return (
-      queryClient.getQueryData(query.queryKey) ??
-      (await queryClient.fetchQuery(query))
-    )
-  }
+import { habitQuery } from '../others/query'
 
 function Habit() {
   const params = useParams()

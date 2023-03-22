@@ -1,10 +1,10 @@
 import { Typography } from '@mui/joy'
 import React, { useEffect } from 'react'
 import { useRouteError } from 'react-router-dom'
-import { useAuth } from '../others/auth'
+import useAuth from '../others/useAuth'
 
 function Error() {
-  const error: any = useRouteError()
+  const error = useRouteError()
   const { user, logout } = useAuth()
 
   useEffect(() => {

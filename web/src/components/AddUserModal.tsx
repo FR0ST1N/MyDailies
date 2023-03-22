@@ -19,7 +19,7 @@ import TimezoneSelect from './TimezoneSelect'
 
 interface AddUserModalProps {
   open: boolean
-  setOpen: Function
+  setOpen: (open: boolean) => void
 }
 function AddUserModal(props: AddUserModalProps) {
   const { open, setOpen } = props

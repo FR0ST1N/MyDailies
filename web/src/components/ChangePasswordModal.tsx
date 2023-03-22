@@ -15,7 +15,7 @@ import PasswordInputDecorator from './PasswordInputDecorator'
 
 interface ChangePasswordModalProps {
   open: boolean
-  setOpen: Function
+  setOpen: (open: boolean) => void
 }
 function ChangePasswordModal(props: ChangePasswordModalProps) {
   const { open, setOpen } = props

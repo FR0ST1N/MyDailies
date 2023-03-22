@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { apiFetch } from '../others/api'
-import { QueryClient, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import AdminChip from '../components/AdminChip'
 import { Container } from '@mui/system'
 import {
@@ -14,76 +13,11 @@ import {
 } from '@mui/joy'
 import { Calendar, Mail, User, Clock, Edit } from 'react-feather'
 import ChangePasswordModal from '../components/ChangePasswordModal'
-import { ActionFunctionArgs } from 'react-router-dom'
 import * as ct from 'countries-and-timezones'
-import { getTimezoneFromString, getTimezoneString } from '../others/timezone'
+import { getTimezoneString } from '../others/timezone'
 import EditUserModal from '../components/EditUserModal'
 import TimezoneSelect from '../components/TimezoneSelect'
-
-export interface UserResponse {
-  name: string
-  email: string
-  created_at: string
-  admin: boolean
-  timezone: string
-}
-
-interface ChangePasswordRequest {
-  password: string
-  new_password: string
-}
-
-type ActionIntent = 'info' | 'password' | null
-
-interface PatchUserRequest {
-  timezone?: string
-}
-
-export const userQuery = () => ({
-  queryKey: ['user'],
-  queryFn: async () => apiFetch<null, UserResponse>(`/api/user`, 'GET', null),
-})
-
-export const loader = (queryClient: QueryClient) => async () => {
-  const query = userQuery()
-  return (
-    queryClient.getQueryData(query.queryKey) ??
-    (await queryClient.fetchQuery(query))
-  )
-}
-
-export const action =
-  (queryClient: QueryClient) =>
-  async ({ request }: ActionFunctionArgs) => {
-    const formData = await request.formData()
-    const intent = formData.get('intent')?.toString() as ActionIntent
-    if (intent === 'password') {
-      const data: ChangePasswordRequest = {
-        password: formData.get('password')?.toString() ?? '',
-        new_password: formData.get('new-password')?.toString() ?? '',
-      }
-      const res = await apiFetch<ChangePasswordRequest, any>(
-        '/api/user/password',
-        'PATCH',
-        data
-      )
-      return res
-    } else if (intent === 'info') {
-      const timezone = getTimezoneFromString(formData) ?? undefined
-      const data: PatchUserRequest = {
-        timezone: timezone,
-      }
-      const res = await apiFetch<PatchUserRequest, any>(
-        '/api/user',
-        'PATCH',
-        data
-      )
-      queryClient.invalidateQueries(userQuery().queryKey)
-      return res
-    } else {
-      return null
-    }
-  }
+import { userQuery } from '../others/query'
 
 function Account() {
   const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false)
@@ -134,7 +68,7 @@ function Account() {
             >
               {user?.timezone === undefined
                 ? 'Empty'
-                : getTimezoneString(ct.getTimezone(user.timezone)!)}
+                : getTimezoneString(ct.getTimezone(user.timezone))}
             </Typography>
           </ListItemContent>
         </ListItem>
