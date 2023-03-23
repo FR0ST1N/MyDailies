@@ -16,9 +16,9 @@ function Home() {
       <TitleWithAddIcon title="Habits" action={() => setOpenAddModal(true)} />
       <Stack spacing={2}>
         {habits &&
-          habits.map((habit, index) => (
+          habits.map((habit) => (
             <HabitCard
-              key={`habit-${index}`}
+              key={`habit-${habit.id}`}
               name={habit.name}
               id={habit.id}
               lastActivity={habit.last_activity}
