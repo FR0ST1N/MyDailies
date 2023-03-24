@@ -12,6 +12,11 @@ type Entry struct {
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 
-	HabitID uint      `gorm:"index" json:"habit_id"`
-	Date    time.Time `gorm:"index" json:"date"`
+	HabitID uint           `gorm:"index" json:"habit_id"`
+	Date    time.Time      `gorm:"index" json:"date"`
+	Note    *string `gorm:"default:null" json:"note"`
+}
+
+type NoteRequest struct {
+	Note *string ` json:"note"`
 }

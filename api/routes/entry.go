@@ -19,5 +19,6 @@ func InitEntryRoutes(r *gin.RouterGroup, repo repository.IEntryRepository, habit
 	{
 		entryRoutes.POST("", controller.CreateEntry)
 		entryRoutes.GET("", controller.GetEntry)
+		entryRoutes.POST("/:entryId/note", controller.PatchNote)
 	}
 }

@@ -15,6 +15,8 @@ type EntryRepository struct {
 type IEntryRepository interface {
 	Create(e *models.Entry) error
 	Check(e *models.Entry, loc *time.Location) error
+	CheckIfEntryExists(entryId uint) (*models.Entry, error)
+	Update(id uint, e *models.Entry) error
 	ReadBetween(hid uint, start time.Time, end time.Time) (*[]models.Entry, error)
 }
 
@@ -33,4 +35,15 @@ func (repo *EntryRepository) ReadBetween(hid uint, start time.Time, end time.Tim
 	var entries []models.Entry
 	err := repo.DB.Where("habit_id = ?", hid).Where("date BETWEEN ? AND ?", start, end).Find(&entries).Error
 	return &entries, err
+}
+
+func (repo *EntryRepository) CheckIfEntryExists(entryId uint) (*models.Entry, error) {
+	var entry models.Entry
+	err := repo.DB.Where("id = ?", entryId).Find(&entry).Error
+	return &entry, err
+}
+
+func (repo *EntryRepository) Update(id uint, e *models.Entry) error {
+	err := repo.DB.Model(&models.Entry{ID: id}).Updates(&e).Error
+	return err
 }
