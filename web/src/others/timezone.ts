@@ -1,6 +1,9 @@
 import * as ct from 'countries-and-timezones'
 
-export const getTimezoneString = (timezone: ct.Timezone): string => {
+export const getTimezoneString = (timezone: ct.Timezone | null): string => {
+  if (timezone === null) {
+    return 'Invalid timezone'
+  }
   return `(${timezone.utcOffsetStr}) ${timezone.name}`
 }
 

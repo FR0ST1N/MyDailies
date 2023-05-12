@@ -3,17 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { getDatesInMonth } from '../others/calendar'
 import CalendarDay from './CalendarDay'
 import { ArrowLeft, ArrowRight } from 'react-feather'
-import { apiFetch } from '../others/api'
 import dayjs from 'dayjs'
-import { QueryClient, useQuery } from '@tanstack/react-query'
-import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  useOutletContext,
-  useParams,
-} from 'react-router-dom'
-import toast from 'react-hot-toast'
-import { habitQuery } from '../pages/Habit'
+import { useQuery } from '@tanstack/react-query'
+import { useOutletContext, useParams } from 'react-router-dom'
+import { invalidHabitId } from '../others/consts'
+import { entriesQuery } from '../others/query'
 
 const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 const months = [
@@ -31,80 +25,8 @@ const months = [
   'December',
 ]
 
-interface EntryResponse {
-  id: number
-  date: string
-  created_at: string
-}
-
-interface EntryQueryParams {
-  id: number
-  year: number
-  month: number
-}
-
-const invalidIdErr = new Error('Invalid habit id')
-
-export const getEntryRequestObject = (
-  id: string | undefined
-): EntryQueryParams => {
-  if (id === undefined) {
-    throw invalidIdErr
-  }
-  const idNum = +id
-  const date = new Date()
-  return {
-    id: idNum,
-    year: date.getFullYear(),
-    month: date.getMonth(),
-  }
-}
-
-export const entriesQuery = (entry: EntryQueryParams) => ({
-  queryKey: ['entries', entry.id, { year: entry.year, month: entry.month }],
-  queryFn: async () =>
-    apiFetch<null, EntryResponse[]>(
-      `/api/habit/${entry.id}/entry?year=${entry.year}&month=${
-        entry.month + 1
-      }`,
-      'GET',
-      null
-    ),
-})
-
-export const loader =
-  (queryClient: QueryClient) =>
-  async ({ params }: LoaderFunctionArgs) => {
-    var id = params.habitId
-    const query = entriesQuery(getEntryRequestObject(id))
-    return (
-      queryClient.getQueryData(query.queryKey) ??
-      (await queryClient.fetchQuery(query))
-    )
-  }
-
-export const action =
-  (queryClient: QueryClient) =>
-  async ({ params }: ActionFunctionArgs) => {
-    const id = params.habitId
-    if (id === undefined) {
-      throw invalidIdErr
-    }
-    const res = await apiFetch<null, any>(
-      `/api/habit/${id}/entry`,
-      'POST',
-      null
-    )
-    queryClient.invalidateQueries(
-      entriesQuery(getEntryRequestObject(id)).queryKey
-    )
-    queryClient.invalidateQueries(habitQuery(id).queryKey)
-    toast('Checked-in for today', { icon: '🎉' })
-    return res
-  }
-
 interface CalendarOutletProps {
-  setDisableCheckIn: Function
+  setDisableCheckIn: (disable: boolean) => void
 }
 
 function Calendar() {
@@ -115,7 +37,7 @@ function Calendar() {
 
   const params = useParams()
   if (params.habitId === undefined) {
-    throw invalidIdErr
+    throw invalidHabitId
   }
   const { data: entries } = useQuery(
     entriesQuery({
@@ -205,8 +127,8 @@ function Calendar() {
           spacing={1}
           sx={{ py: 1.5 }}
         >
-          {week.map((day, j) =>
-            day != null ? (
+          {week.map((date, j) =>
+            date != null ? (
               <Grid
                 key={`week-${i}-day-${j}`}
                 container
@@ -214,9 +136,9 @@ function Calendar() {
                 justifyContent="center"
               >
                 <CalendarDay
-                  completed={completedDays.has(day)}
-                  day={day}
-                  createdAt={completedDays.get(day)}
+                  completed={completedDays.has(date.getDate())}
+                  date={date}
+                  createdAt={completedDays.get(date.getDate())}
                 />
               </Grid>
             ) : (

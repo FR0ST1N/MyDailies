@@ -1,24 +1,25 @@
+type WeekDay = (null | Date)[]
+
 export const getDatesInMonth = (year: number, month: number) => {
-  const monthDates = []
+  const monthDates: WeekDay[] = []
 
   const date = new Date(year, month, 1)
-
   // add null padding before month starts for week 1
-  const week1 = []
-  var startDay = date.getDay()
+  const week1: WeekDay = []
+  let startDay = date.getDay()
   while (startDay--) {
     week1.push(null)
   }
   while (week1.length < 7) {
-    week1.push(date.getDate())
+    week1.push(new Date(date))
     date.setDate(date.getDate() + 1)
   }
   monthDates.push(week1)
 
   // Add remaining weeks
-  var week = []
+  let week: WeekDay = []
   while (date.getMonth() === month) {
-    week.push(date.getDate())
+    week.push(new Date(date))
     date.setDate(date.getDate() + 1)
     if (week.length === 7) {
       monthDates.push(week)
@@ -33,6 +34,5 @@ export const getDatesInMonth = (year: number, month: number) => {
     }
     monthDates.push(week)
   }
-
   return monthDates
 }

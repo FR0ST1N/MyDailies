@@ -2,18 +2,18 @@ import { Button, MenuItem, Menu, ListItemDecorator } from '@mui/joy'
 import React from 'react'
 import { GitHub, LogOut, MoreVertical, User, Users } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../others/auth'
+import useAuth from '../others/useAuth'
 import AdminComponent from './AdminComponent'
 import AuthComponent from './AuthComponent'
 
 function MoreButton() {
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
   const { logout } = useAuth()
   const open = Boolean(anchorEl)
 
   const navigate = useNavigate()
 
-  const handleClick = (event: any) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 

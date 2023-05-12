@@ -1,4 +1,4 @@
-import { tokenName } from './auth'
+import { tokenName } from './consts'
 
 const handleError = async (response: Response) => {
   const isJson = response.headers

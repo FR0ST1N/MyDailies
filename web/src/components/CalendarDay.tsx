@@ -1,19 +1,37 @@
-import { Sheet, Tooltip, Typography, useColorScheme } from '@mui/joy'
+import {
+  ColorPaletteProp,
+  Sheet,
+  Tooltip,
+  Typography,
+  useColorScheme,
+} from '@mui/joy'
+import dayjs from 'dayjs'
 import React from 'react'
 
 interface CalendarDayProps {
-  day: number
+  date: Date
   completed: boolean
   createdAt?: string
 }
 function CalendarDay(props: CalendarDayProps) {
-  const { day, completed, createdAt } = props
+  const { date, completed, createdAt } = props
   const { mode } = useColorScheme()
+  const isToday = dayjs(date).isToday()
+
+  // Sheet color stuff
+  let sheetColor: ColorPaletteProp = 'neutral'
+  if (completed) {
+    sheetColor = 'success'
+  } else if (isToday) {
+    sheetColor = 'primary'
+  }
+  const isSolidSheet = completed || sheetColor !== 'neutral'
+
   return (
     <Tooltip title={createdAt}>
       <Sheet
-        variant={completed ? 'solid' : 'soft'}
-        color={completed ? 'success' : 'neutral'}
+        variant={isSolidSheet ? 'solid' : 'soft'}
+        color={sheetColor}
         sx={{
           borderRadius: '50%',
           width: '2em',
@@ -26,11 +44,11 @@ function CalendarDay(props: CalendarDayProps) {
         }}
       >
         <Typography
-          textColor={mode === 'light' && completed ? 'white' : ''}
+          textColor={mode === 'light' && isSolidSheet ? 'white' : ''}
           level="body1"
           sx={{ cursor: 'inherit', userSelect: 'none' }}
         >
-          {day}
+          {date.getDate()}
         </Typography>
       </Sheet>
     </Tooltip>

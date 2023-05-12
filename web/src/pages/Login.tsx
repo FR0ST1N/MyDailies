@@ -8,45 +8,14 @@ import {
 } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
 import { LogIn } from 'react-feather'
-import toast from 'react-hot-toast'
 import {
-  ActionFunctionArgs,
   Form,
   useActionData,
   useNavigate,
   useNavigation,
 } from 'react-router-dom'
 import PasswordInputDecorator from '../components/PasswordInputDecorator'
-import { apiFetch } from '../others/api'
-import { useAuth } from '../others/auth'
-
-interface TokenRequest {
-  email: string
-  password: string
-}
-
-interface TokenResponse {
-  token: string
-}
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData()
-  try {
-    const data: TokenRequest = {
-      email: formData.get('email')?.toString() ?? '',
-      password: formData.get('password')?.toString() ?? '',
-    }
-    const res = await apiFetch<TokenRequest, TokenResponse>(
-      '/api/user/token',
-      'POST',
-      data
-    )
-    return res.token
-  } catch (err: any) {
-    toast.error(err === 'record not found' ? 'Invalid email' : err)
-    return null
-  }
-}
+import useAuth from '../others/useAuth'
 
 function Login() {
   const { state } = useNavigation()

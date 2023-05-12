@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAuth } from '../others/auth'
+import useAuth from '../others/useAuth'
 
 interface AdminComponentProps {
   children: React.ReactNode
