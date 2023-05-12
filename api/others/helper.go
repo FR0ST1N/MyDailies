@@ -52,3 +52,10 @@ func GetTZLocation(tz string) (*time.Location, error) {
 	loc, err := time.LoadLocation(tz)
 	return loc, err
 }
+
+func IsToday(a *time.Time, b *time.Time) bool {
+	if a == nil || b == nil {
+		return false
+	}
+	return a.Year() == b.Year() && a.Month() == b.Month() && a.Day() == b.Day()
+}

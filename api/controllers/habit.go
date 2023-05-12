@@ -49,6 +49,15 @@ func (controller *HabitController) GetHabits(c *gin.Context) {
 	// Bind id to user model
 	var user models.User = models.User{ID: id.(uint)}
 
+	// Get user data
+	if err := controller.UserRepo.FindByID(&user); err != nil {
+		others.HandleGormError(c, err)
+		return
+	}
+
+	// Get timezone
+	loc, _ := others.GetTZLocation(user.Timezone)
+
 	// Get all habits for auth user
 	habits, err := controller.Repo.GetHabits(&user)
 	if err != nil {
@@ -60,19 +69,22 @@ func (controller *HabitController) GetHabits(c *gin.Context) {
 	res := []*models.HabitAllResponse{}
 	for i := 0; i < len(*habits); i++ {
 		var lastActivity *time.Time
+		var activityDate *time.Time
 		n := len((*habits)[i].Entries)
 		// Add entry as last activity
 		if n > 0 {
-			t := (*habits)[i].Entries[0].CreatedAt
-			lastActivity = &t
+			lastActivity = &(*habits)[i].Entries[0].CreatedAt
+			activityDate = &(*habits)[i].Entries[0].Date
 		}
 
+		userTimeNow := time.Now().In(loc)
 		// Add current habit to response
 		res = append(res, &models.HabitAllResponse{
-			ID:           (*habits)[i].ID,
-			Name:         (*habits)[i].Name,
-			CreatedAt:    (*habits)[i].CreatedAt,
-			LastActivity: lastActivity,
+			ID:             (*habits)[i].ID,
+			Name:           (*habits)[i].Name,
+			CreatedAt:      (*habits)[i].CreatedAt,
+			LastActivity:   lastActivity,
+			CompletedToday: others.IsToday(activityDate, &userTimeNow),
 		})
 	}
 	c.JSON(http.StatusOK, res)

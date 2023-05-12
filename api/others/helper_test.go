@@ -160,3 +160,26 @@ func TestGetTZLocation(t *testing.T) {
 		}
 	}
 }
+
+func TestIsToday(t *testing.T) {
+	a := assert.New(t)
+	today := time.Now()
+	yesterday := today.AddDate(0, 0, -1)
+	lastMonth := today.AddDate(0, -1, 0)
+	lastYear := today.AddDate(-1, 0, 0)
+
+	var tests = []struct {
+		time     *time.Time
+		expected bool
+	}{
+		{&today, true},
+		{&yesterday, false},
+		{&lastMonth, false},
+		{&lastYear, false},
+		{nil, false},
+	}
+	for _, test := range tests {
+		result := others.IsToday(test.time, &today)
+		a.Equal(test.expected, result)
+	}
+}
