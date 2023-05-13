@@ -1,5 +1,4 @@
 import { Sheet, Typography } from '@mui/joy'
-import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { CheckCircle } from 'react-feather'
@@ -17,17 +16,10 @@ interface HabitCardProps {
   name: string
   lastActivity: string | null
   id: number
+  completed: boolean
 }
 function HabitCard(props: HabitCardProps) {
-  const { name, lastActivity, id } = props
-
-  const [completed, setCompleted] = useState(false)
-
-  useEffect(() => {
-    if (dayjs(lastActivity).isToday()) {
-      setCompleted(true)
-    }
-  }, [lastActivity])
+  const { name, lastActivity, id, completed } = props
 
   const navigate = useNavigate()
   return (
