@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/FR0ST1N/MyDailies/api/models"
@@ -46,6 +47,10 @@ func (controller *HabitController) CreateHabit(c *gin.Context) {
 func (controller *HabitController) GetHabits(c *gin.Context) {
 	// Get auth user id from context
 	id, _ := c.Get("user")
+
+	// Get query for sort
+	sortBy := c.Query("sort")
+
 	// Bind id to user model
 	var user models.User = models.User{ID: id.(uint)}
 
@@ -87,6 +92,14 @@ func (controller *HabitController) GetHabits(c *gin.Context) {
 			CompletedToday: others.IsToday(activityDate, &userTimeNow),
 		})
 	}
+
+	if sortBy == "completed" {
+		// Sort so that completed items are at the end of the slice
+		sort.SliceStable(res, func(i, j int) bool {
+			return !res[i].CompletedToday && res[j].CompletedToday
+		})
+	}
+
 	c.JSON(http.StatusOK, res)
 }
 

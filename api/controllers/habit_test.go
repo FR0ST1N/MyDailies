@@ -83,8 +83,18 @@ func (suite *HabitTestSuite) TestGetHabitsSuccess() {
 	a := assert.New(suite.T())
 	td := TestData{json: `{"name": "water plants"}`, code: http.StatusOK}
 	w := td.NewHttpRequest(a, suite.router, "GET", "/api/habit/all", true, false)
-	expected := fmt.Sprintf(`[{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": %q, "completed_today": %t},{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": null, "completed_today": %t}]`,
-		"Drink Water", 1, utcTimeNow.Format(time.RFC3339Nano), true, "Go For A Walk", 2, false)
+	expected := fmt.Sprintf(`[{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": %q, "completed_today": %t},{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": null, "completed_today": %t}, {"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": %q, "completed_today": %t}]`,
+		"Drink Water", 1, utcTimeNow.Format(time.RFC3339Nano), true, "Go For A Walk", 2, false, "Exercise", 3, utcTimeNow.Format(time.RFC3339Nano), true)
+	actual := w.Body.String()
+	a.JSONEq(expected, actual)
+}
+
+func (suite *HabitTestSuite) TestGetHabitsSortSuccess() {
+	a := assert.New(suite.T())
+	td := TestData{json: `{"name": "water plants"}`, code: http.StatusOK}
+	w := td.NewHttpRequest(a, suite.router, "GET", "/api/habit/all?sort=completed", true, false)
+	expected := fmt.Sprintf(`[{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": null, "completed_today": %t},{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": %q, "completed_today": %t},  {"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": %q, "completed_today": %t}]`,
+		"Go For A Walk", 2, false, "Drink Water", 1, utcTimeNow.Format(time.RFC3339Nano), true, "Exercise", 3, utcTimeNow.Format(time.RFC3339Nano), true)
 	actual := w.Body.String()
 	a.JSONEq(expected, actual)
 }
