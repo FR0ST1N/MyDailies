@@ -37,11 +37,15 @@ function HabitCard(props: HabitCardProps) {
     >
       <Typography
         level="h6"
+        textColor={completed ? 'text.tertiary' : 'text.primary'}
         endDecorator={completed ? <CheckDecorator /> : null}
       >
         {name}
       </Typography>
-      <Typography level="body2">
+      <Typography
+        level="body2"
+        textColor={completed ? 'text.tertiary' : 'text.secondary'}
+      >
         Last activity {lastActivity ? dayjs(lastActivity).fromNow() : 'none'}
       </Typography>
     </Sheet>
