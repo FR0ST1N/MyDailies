@@ -42,9 +42,18 @@ curl -X POST http://localhost:8080/api/user/setup-admin \
 
 ### Start server
 
-- Start API server with `go run ./main.go`
-- Start web server with `npm start --prefix ./web`
+#### API Server
 
+Make sure you have air installed. If not, install it from [here](https://github.com/air-verse/air).
+
+- Start API server with `air`
+
+#### Web Server
+
+CD into the web directory and run the following commands.
+
+- Install dependencies `npm ci`
+- Start the server `npm start`
 
 ### Run tests
 
