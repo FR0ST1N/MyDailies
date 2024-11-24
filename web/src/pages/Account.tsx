@@ -79,7 +79,7 @@ function Account() {
           </ListItemDecorator>
           <ListItemContent>
             {user?.created_at &&
-              `Account created at ${new Date(
+              `Account created on ${new Date(
                 user?.created_at
               ).toLocaleDateString()}`}
           </ListItemContent>
