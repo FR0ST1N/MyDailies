@@ -22,10 +22,11 @@ type HabitRequest struct {
 }
 
 type HabitAllResponse struct {
-	ID           uint       `json:"id"`
-	Name         string     `json:"name"`
-	CreatedAt    time.Time  `json:"created_at"`
-	LastActivity *time.Time `json:"last_activity"`
+	ID             uint       `json:"id"`
+	Name           string     `json:"name"`
+	CreatedAt      time.Time  `json:"created_at"`
+	LastActivity   *time.Time `json:"last_activity"`
+	CompletedToday bool       `json:"completed_today"`
 }
 
 type Streak struct {

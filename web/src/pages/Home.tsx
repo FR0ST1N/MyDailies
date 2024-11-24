@@ -22,6 +22,7 @@ function Home() {
               name={habit.name}
               id={habit.id}
               lastActivity={habit.last_activity}
+              completed={habit.completed_today}
             />
           ))}
         {habits && habits.length === 0 && (

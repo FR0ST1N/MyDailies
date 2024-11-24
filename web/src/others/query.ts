@@ -36,7 +36,11 @@ export const habitQuery = (id: string) => ({
 export const habitsQuery = () => ({
   queryKey: ['habits'],
   queryFn: async () =>
-    apiFetch<null, HomeCardResponse[]>('/api/habit/all', 'GET', null),
+    apiFetch<null, HomeCardResponse[]>(
+      '/api/habit/all?sort=completed',
+      'GET',
+      null
+    ),
 })
 
 export const usersQuery = () => ({

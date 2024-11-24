@@ -16,6 +16,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var utcTimeNow = time.Now().UTC()
+
 type HabitTestSuite struct {
 	suite.Suite
 	router *gin.Engine
@@ -40,8 +42,9 @@ func (suite *HabitTestSuite) SetupSuite() {
 	mockRepo.On("LongestStreak", mock.AnythingOfType("uint")).Return(uint(10), nil)
 	mockRepo.On("Update", mock.AnythingOfType("uint"), mock.AnythingOfType("*models.Habit")).Return(nil)
 	mockRepo.On("GetHabits", mock.AnythingOfType("*models.User")).Return(&[]models.Habit{
-		{ID: 1, Name: "Drink Water", UserID: 1, Entries: []models.Entry{{ID: 1, HabitID: 1}}},
+		{ID: 1, Name: "Drink Water", UserID: 1, Entries: []models.Entry{{ID: 1, HabitID: 1, CreatedAt: utcTimeNow, Date: utcTimeNow}}},
 		{ID: 2, Name: "Go For A Walk", UserID: 1},
+		{ID: 3, Name: "Exercise", UserID: 1, Entries: []models.Entry{{ID: 2, HabitID: 3, CreatedAt: utcTimeNow, Date: utcTimeNow}}},
 	}, nil)
 	mockRepo.On("IsUser", mock.AnythingOfType("uint"), mock.AnythingOfType("uint")).Return(true, nil)
 
@@ -80,8 +83,18 @@ func (suite *HabitTestSuite) TestGetHabitsSuccess() {
 	a := assert.New(suite.T())
 	td := TestData{json: `{"name": "water plants"}`, code: http.StatusOK}
 	w := td.NewHttpRequest(a, suite.router, "GET", "/api/habit/all", true, false)
-	expected := fmt.Sprintf(`[{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": "0001-01-01T00:00:00Z"},{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": null}]`,
-		"Drink Water", 1, "Go For A Walk", 2)
+	expected := fmt.Sprintf(`[{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": %q, "completed_today": %t},{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": null, "completed_today": %t}, {"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": %q, "completed_today": %t}]`,
+		"Drink Water", 1, utcTimeNow.Format(time.RFC3339Nano), true, "Go For A Walk", 2, false, "Exercise", 3, utcTimeNow.Format(time.RFC3339Nano), true)
+	actual := w.Body.String()
+	a.JSONEq(expected, actual)
+}
+
+func (suite *HabitTestSuite) TestGetHabitsSortSuccess() {
+	a := assert.New(suite.T())
+	td := TestData{json: `{"name": "water plants"}`, code: http.StatusOK}
+	w := td.NewHttpRequest(a, suite.router, "GET", "/api/habit/all?sort=completed", true, false)
+	expected := fmt.Sprintf(`[{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": null, "completed_today": %t},{"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": %q, "completed_today": %t},  {"name": %q, "id": %d, "created_at": "0001-01-01T00:00:00Z", "last_activity": %q, "completed_today": %t}]`,
+		"Go For A Walk", 2, false, "Drink Water", 1, utcTimeNow.Format(time.RFC3339Nano), true, "Exercise", 3, utcTimeNow.Format(time.RFC3339Nano), true)
 	actual := w.Body.String()
 	a.JSONEq(expected, actual)
 }

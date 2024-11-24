@@ -41,6 +41,7 @@ export interface HomeCardResponse {
   name: string
   created_at: string
   last_activity: string
+  completed_today: boolean
 }
 
 export interface AddHabitRequest {
